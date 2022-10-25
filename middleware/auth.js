@@ -1,9 +1,11 @@
-import { request } from "express";
+
 import jwt from "jsonwebtoken";
 
-const auth = async (request, response, next) => {
+
+
+const auth = async (req, res, next) => {
     try {
-        const token = request.headers.Authorization.split(" ")[1];
+        const token = req.headers.authorization.split(" ")[1];
         const isCustomAuth = token.length < 500;
 
         let decodedData;
@@ -11,11 +13,11 @@ const auth = async (request, response, next) => {
         if (token && isCustomAuth) {
             decodedData = jwt.verify(token, 'test');
 
-            request.userId = decodedData?.id;
+            req.userId = decodedData?.id;
         } else {
             decodedData = jwt.decode(token);
 
-            request.userId = decodedData?.sub;
+            req.userId = decodedData?.sub;
         }
 
         next();
